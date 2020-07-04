@@ -1,4 +1,56 @@
 题目1：输出完全二叉树的最后一排最后一个node
 要求：查询时间在O(n)以内
 分析：根据完全二叉树的特性，要找到最后一排的最后一个节点，时间小于O（n），那么使用类似二分法的方法进行遍历。
-思路：
+思路1：1、首先根据完全二叉树的特性，从根部节点出发，一直往左子树进行遍历，直到为空，得到树的深度；
+     2、从根结点开始，
+     
+思路2:
+     
+思路1代码（java）：
+struct BinaryTreeNode{
+    int value;
+    BinaryTreeNode* left;
+    BinaryTreeNode* right;
+    BinaryTreeNode(int x): value(x), left(NULL), right(NULL){}
+};
+
+BinaryTreeNode* getLastNode(BinaryTreeNode* root)
+{
+    //只有根节点
+    if(root || (!root->left&&!root->right)) return root;
+    int depth = 0;
+    BinaryTreeNode* curNode = root;
+    while(curNode)
+    {
+        depth++;
+        curNode = curNode->left;
+    }
+    int level = 0, tmpdepth = 0;
+    while(root)
+    {
+        level++;//当前是第几层，根节点是第一层
+        if(level==depth) break; // 防止右子树为空
+        curNode = root;
+        // 是否在判断右子树
+        if(curNode->right)
+        {
+            BinaryTreeNode* pCur = root;
+            curNode = curNode->right;
+            tmpdepth = level + 1;
+            //找右子树的最左枝
+            while (curNode->left)
+            {
+                tmpdepth++;
+                pCur = curNode;
+                curNode = curNode->left;
+            }
+            if(tmpdepth<depth) root = root->left;//不在右子树，在左子树，根节点移动到左子树
+            else if(!pCur->right||pCur->right==curNode) return curNode;//深度已经满足了，如果没有右兄弟或者自己就是右兄弟，那么即为所求
+            else root = root->right;//确实在右子树，根节点移动到右子树
+            
+        }
+        else root = root->left;
+    }
+    return root;// 保证程序完整
+}
+
