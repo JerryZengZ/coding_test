@@ -1,0 +1,121 @@
+题目描述：给一个二叉树，判断其是否为镜像二叉树
+分析：镜像二叉树是节点的左孩子等于右孩子，在中间轴对称，因此使用递归进行遍历，分别判断左节点的左孩子与右节点的右孩子，左节点的右孩子与右节点的左孩子值是否相等。
+思路：1、首先判断根结点是否为空，即返回true；
+    2、然后递归遍历，根结点的左孩子和根结点的右孩子；
+    3、判断：如果左右都为空，即遍历完，返回true；
+            如果左右都存在，并且左右的值相等，那么递归遍历左节点的左孩子与右节点的右孩子，左节点的右孩子与右节点的左孩子；
+            否则，返回false；
+
+代码（C++）：
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if(root==NULL)
+            return true;
+        return check(root->left,root->right);
+    }
+    bool check(TreeNode * L,TreeNode * R)
+    {
+        if(L==NULL && R==NULL)
+            return true;
+        else if(L && R && L->val==R->val)
+            return check(L->left,R->right) && check(L->right,R->left);
+        else
+            return false;
+    }
+};
+
+代码（java）：
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public boolean isSymmetric(TreeNode root) {
+        if(root==null)
+            return true;
+        return check(root.left,root.right);
+    }
+    public boolean check(TreeNode L,TreeNode R)
+    {
+        if(L==null && R==null)
+            return true;
+        else if(L!=null && R!=null && L.val==R.val)
+            return check(L.left,R.right) && check(L.right,R.left);
+        else
+            return false;
+    }
+}
+
+代码（python）：
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if root==None:
+            return True
+        return self.check(root.left,root.right)
+
+    def check(self,L,R):
+        if not L and not R:
+            return True
+        elif L and R and L.val==R.val:
+            return self.check(L.right,R.left) and self.check(L.left,R.right)
+        else:
+            return False
+            
+            
+            
+ 除了递归外，还可以使用迭代的方式进行,使用队列进行存在，将节点的左右孩子进队列，然后分别出队列后比较。
+ /**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        return check(root,root);
+    }
+    bool check(TreeNode* u,TreeNode* v){
+        queue<TreeNode*> q;
+        q.push(u);
+        q.push(v);
+        while (!q.empty()) {
+            u = q.front(); q.pop();
+            v = q.front(); q.pop();
+            if (!u && !v) continue;
+            if ((!u || !v) || (u->val != v->val)) return false;
+
+            q.push(u->left); 
+            q.push(v->right);
+
+            q.push(u->right); 
+            q.push(v->left);
+        }
+        return true;
+    }
+};
